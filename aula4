@@ -1,0 +1,54 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn import tree
+from sklearn.tree import DecisionTreeClassifier
+
+
+
+acuracias = []
+for x in range(0, 10):
+    dataWine = pd.read_csv(
+        "https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data", header=None)
+
+    labels = dataWine[0]
+    data = dataWine.drop(0, axis=1)
+
+    # d = {'Iris-setosa': 0, 'Iris-versicolour': 1, 'Iris-virginica': 2}
+    # labels_mapeado = labels.map(d)
+
+
+    data_train, data_test, label_train, label_test = train_test_split(
+        data, labels, test_size=0.2)
+
+
+    modelo = tree.DecisionTreeClassifier()
+    modelo.fit(data_train, label_train)
+    predicao = modelo.predict(data_test)
+    print("Predicção: ", predicao)
+    acuracia = accuracy_score(predicao, label_test)*100
+    acuracias.append(acuracia)
+    print("Acurácia: ", acuracia)
+
+print('\n\n')
+print('média: ', np.mean(acuracia))
+print('mínimo: ', np.min(acuracias))
+print('máximo: ', np.max(acuracias))
+
+dados1 = [[13.71,1.86,2.36,16.6,101,2.61,2.88,.27,1.69,3.8,1.11,4,1035]] #1
+dados2 = [[12,1.51,2.42,22,86,1.45,1.25,.5,1.63,3.6,1.05,2.65,450]] #2
+dados3 = [[13.17,5.19,2.32,22,93,1.74,.63,.61,1.55,7.9,.6,1.48,725]] #3
+
+predicao1 = modelo.predict(dados1)
+predicao2 = modelo.predict(dados2)
+predicao3 = modelo.predict(dados3)
+
+
+print('Predição 1: ', predicao1)
+print('Predição 2: ', predicao2)
+print('Predição 3: ', predicao3)
+print('\nMatriz confusão:\n')
+print(confusion_matrix(label_test, predicao))
+print('\nRelatório:\n')
+print(classification_report(label_test, predicao))
